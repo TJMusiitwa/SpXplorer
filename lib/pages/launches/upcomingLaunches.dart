@@ -1,70 +1,47 @@
-import 'package:async/async.dart';
-import 'package:dio/dio.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get_instance/get_instance.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spxplorer/pages/launches/launchDetails.dart';
+import 'package:spxplorer/services/spacexAPIState.dart';
 
-class UpcomingLaunches extends StatefulWidget {
-  @override
-  _UpcomingLaunchesState createState() => _UpcomingLaunchesState();
-}
-
-class _UpcomingLaunchesState extends State<UpcomingLaunches>
-    with AutomaticKeepAliveClientMixin {
-  final Dio spaceXAPI = Get.find();
-
-  final AsyncMemoizer _memoizer = AsyncMemoizer();
+class UpcomingLaunches extends ConsumerWidget {
+  const UpcomingLaunches({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Scaffold(
-      body: FutureBuilder(
-        future: _fetchUpcomingLaunches(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            var upcoming = snapshot.data;
-            return ListView.builder(
-              itemCount: upcoming.length,
-              itemBuilder: (BuildContext context, int index) {
-                var data = upcoming[index];
-                return ListTile(
-                  title: Text(data['name']),
-                  subtitle: Text(
-                      DateTime.parse(data["date_local"]).toLocal().toString()),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
+  Widget build(BuildContext context, ScopedReader watch) {
+    var upcoming = watch(upcomingLaunchesFuture);
 
-          // By default, show a loading spinner.
-          return Center(child: CircularProgressIndicator());
+    return upcoming.when(
+      data: (data) => ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) {
+          var launch = data[index];
+
+          return ListTile(
+              leading: Hero(
+                tag: launch.id,
+                child: Container(
+                  height: 150,
+                  width: 120,
+                  child: CachedNetworkImage(
+                    imageUrl: launch.links!.patch!.large.toString(),
+                    placeholder: (context, _) => Image.asset('assets/logo.png'),
+                    errorWidget: (context, _, __) =>
+                        Image.asset('assets/logo.png'),
+                  ),
+                ),
+              ),
+              title: Text(launch.name),
+              subtitle: Text(launch.dateUtc.toString()),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => LaunchDetails(launch: launch),
+                      fullscreenDialog: true)));
         },
       ),
+      loading: () => Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('${error.toString()}')),
     );
   }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUpcomingLaunches();
-  }
-
-  Future<void> _fetchUpcomingLaunches() async {
-    return await this._memoizer.runOnce(() async {
-      final response = await spaceXAPI.get('/launches/upcoming',
-          options: RequestOptions(responseType: ResponseType.json));
-
-      if (response.statusCode == 200) {
-        final upcomingLaunch = List.from(response.data);
-        return upcomingLaunch;
-      } else {
-        throw Exception('Failed to load upcoming launches');
-      }
-    });
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }

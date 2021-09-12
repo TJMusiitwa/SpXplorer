@@ -10,22 +10,22 @@ String companyToJson(Company data) => json.encode(data.toJson());
 
 class Company {
   Company({
-    this.headquarters,
-    this.links,
-    this.name,
-    this.founder,
-    this.founded,
-    this.employees,
-    this.vehicles,
-    this.launchSites,
-    this.testSites,
-    this.ceo,
-    this.cto,
-    this.coo,
-    this.ctoPropulsion,
-    this.valuation,
-    this.summary,
-    this.id,
+    required this.headquarters,
+    required this.links,
+    required this.name,
+    required this.founder,
+    required this.founded,
+    required this.employees,
+    required this.vehicles,
+    required this.launchSites,
+    required this.testSites,
+    required this.ceo,
+    required this.cto,
+    required this.coo,
+    required this.ctoPropulsion,
+    required this.valuation,
+    required this.summary,
+    required this.id,
   });
 
   Headquarters headquarters;
@@ -86,9 +86,9 @@ class Company {
 
 class Headquarters {
   Headquarters({
-    this.address,
-    this.city,
-    this.state,
+    required this.address,
+    required this.city,
+    required this.state,
   });
 
   String address;
@@ -110,10 +110,10 @@ class Headquarters {
 
 class Links {
   Links({
-    this.website,
-    this.flickr,
-    this.twitter,
-    this.elonTwitter,
+    required this.website,
+    required this.flickr,
+    required this.twitter,
+    required this.elonTwitter,
   });
 
   String website;

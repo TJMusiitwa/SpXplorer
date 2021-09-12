@@ -10,36 +10,35 @@ String roadsterToJson(Roadster data) => json.encode(data.toJson());
 
 class Roadster {
   Roadster({
-    this.flickrImages,
-    this.name,
-    this.launchDateUtc,
-    this.launchDateUnix,
-    this.launchMassKg,
-    this.launchMassLbs,
-    this.noradId,
-    this.epochJd,
-    this.orbitType,
-    this.apoapsisAu,
-    this.periapsisAu,
-    this.semiMajorAxisAu,
-    this.eccentricity,
-    this.inclination,
-    this.longitude,
-    this.periapsisArg,
-    this.periodDays,
-    this.speedKph,
-    this.speedMph,
-    this.earthDistanceKm,
-    this.earthDistanceMi,
-    this.marsDistanceKm,
-    this.marsDistanceMi,
-    this.wikipedia,
-    this.video,
-    this.details,
-    this.id,
+    required this.name,
+    required this.launchDateUtc,
+    required this.launchDateUnix,
+    required this.launchMassKg,
+    required this.launchMassLbs,
+    required this.noradId,
+    required this.epochJd,
+    required this.orbitType,
+    required this.apoapsisAu,
+    required this.periapsisAu,
+    required this.semiMajorAxisAu,
+    required this.eccentricity,
+    required this.inclination,
+    required this.longitude,
+    required this.periapsisArg,
+    required this.periodDays,
+    required this.speedKph,
+    required this.speedMph,
+    required this.earthDistanceKm,
+    required this.earthDistanceMi,
+    required this.marsDistanceKm,
+    required this.marsDistanceMi,
+    required this.flickrImages,
+    required this.wikipedia,
+    required this.video,
+    required this.details,
+    required this.id,
   });
 
-  List<String> flickrImages;
   String name;
   DateTime launchDateUtc;
   int launchDateUnix;
@@ -62,13 +61,13 @@ class Roadster {
   double earthDistanceMi;
   double marsDistanceKm;
   double marsDistanceMi;
+  List<String> flickrImages;
   String wikipedia;
   String video;
   String details;
   String id;
 
   factory Roadster.fromJson(Map<String, dynamic> json) => Roadster(
-        flickrImages: List<String>.from(json["flickr_images"].map((x) => x)),
         name: json["name"],
         launchDateUtc: DateTime.parse(json["launch_date_utc"]),
         launchDateUnix: json["launch_date_unix"],
@@ -91,6 +90,7 @@ class Roadster {
         earthDistanceMi: json["earth_distance_mi"].toDouble(),
         marsDistanceKm: json["mars_distance_km"].toDouble(),
         marsDistanceMi: json["mars_distance_mi"].toDouble(),
+        flickrImages: List<String>.from(json["flickr_images"].map((x) => x)),
         wikipedia: json["wikipedia"],
         video: json["video"],
         details: json["details"],
@@ -98,7 +98,6 @@ class Roadster {
       );
 
   Map<String, dynamic> toJson() => {
-        "flickr_images": List<dynamic>.from(flickrImages.map((x) => x)),
         "name": name,
         "launch_date_utc": launchDateUtc.toIso8601String(),
         "launch_date_unix": launchDateUnix,
@@ -121,6 +120,7 @@ class Roadster {
         "earth_distance_mi": earthDistanceMi,
         "mars_distance_km": marsDistanceKm,
         "mars_distance_mi": marsDistanceMi,
+        "flickr_images": List<dynamic>.from(flickrImages.map((x) => x)),
         "wikipedia": wikipedia,
         "video": video,
         "details": details,

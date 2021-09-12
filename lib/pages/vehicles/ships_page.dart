@@ -1,75 +1,46 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get_instance/get_instance.dart';
-import 'package:async/async.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spxplorer/services/spacexAPIState.dart';
 
-class ShipsPage extends StatefulWidget {
-  @override
-  _ShipsPageState createState() => _ShipsPageState();
-}
-
-class _ShipsPageState extends State<ShipsPage>
-    with AutomaticKeepAliveClientMixin {
-  final Dio spaceXAPI = Get.find();
-  final AsyncMemoizer _memoizer = AsyncMemoizer();
+class ShipsPage extends ConsumerWidget {
+  const ShipsPage({Key? key}) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    _fetchShips();
-  }
-
-  Future<void> _fetchShips() async {
-    return await this._memoizer.runOnce(() async {
-      final response = await spaceXAPI.get('/ships');
-      if (response.statusCode == 200) {
-        final ships = [...response.data];
-        return ships;
-      } else {
-        throw Exception('Failed to return Ships');
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return FutureBuilder(
-      future: _fetchShips(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          var data = snapshot.data;
-          return ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (BuildContext context, int index) {
-              var shipData = data[index];
-              return ListTile(
-                  leading: CachedNetworkImage(
-                      imageUrl: shipData['image'] ??
-                          'https://i.imgur.com/woCxpkj.jpg'),
-                  title: Text(shipData['name']),
-                  subtitle: Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: List<Widget>.generate(
-                        shipData['roles'].length,
-                        (index) => Chip(
-                              label: Text(shipData['roles'][index].toString()),
-                            )),
-                  ));
-            },
-          );
-        } else if (snapshot.hasError) {
-          Scaffold.of(context).showSnackBar(
-              SnackBar(content: Text('Problem fetching ships data')));
-        }
-
-        return Center(child: CircularProgressIndicator());
-      },
+  Widget build(BuildContext context, ScopedReader watch) {
+    var shipsData = watch(allShipsFuture);
+    return shipsData.when(
+      data: (value) => ListView.builder(
+        itemCount: value.length,
+        itemBuilder: (BuildContext context, int index) {
+          var shipData = value[index];
+          return ListTile(
+              leading: Hero(
+                tag: shipData.id,
+                child: Container(
+                  height: 180,
+                  width: 100,
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        shipData.image ?? 'https://i.imgur.com/q7UwgBW.jpeg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              title: Text(shipData.name),
+              subtitle: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: List<Widget>.generate(
+                    shipData.roles!.length,
+                    (index) => Chip(
+                          label: Text(shipData.roles![index].toString()),
+                        )),
+              ));
+        },
+      ),
+      loading: () => Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('${error.toString()}')),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

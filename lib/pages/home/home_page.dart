@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:spxplorer/pages/home/next_launch.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -20,9 +19,9 @@ class HomePage extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            NextLaunchWidget(),
+            //NextLaunchWidget(),
             Container(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.background,
             )
           ],
         ),

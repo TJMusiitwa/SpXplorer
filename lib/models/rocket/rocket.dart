@@ -1,33 +1,39 @@
 // To parse this JSON data, do
 //
-//     final rockets = rocketsFromJson(jsonString);
+//     final rocket = rocketFromJson(jsonString);
 
 import 'dart:convert';
 
-class Rockets {
-  Rockets({
-    this.height,
-    this.diameter,
-    this.mass,
-    this.firstStage,
-    this.secondStage,
-    this.engines,
-    this.landingLegs,
-    this.payloadWeights,
-    this.flickrImages,
-    this.name,
-    this.type,
-    this.active,
-    this.stages,
-    this.boosters,
-    this.costPerLaunch,
-    this.successRatePct,
-    this.firstFlight,
-    this.country,
-    this.company,
-    this.wikipedia,
-    this.description,
-    this.id,
+List<Rocket> rocketFromJson(String str) =>
+    List<Rocket>.from(json.decode(str).map((x) => Rocket.fromJson(x)));
+
+String rocketToJson(List<Rocket> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class Rocket {
+  Rocket({
+    required this.height,
+    required this.diameter,
+    required this.mass,
+    required this.firstStage,
+    required this.secondStage,
+    required this.engines,
+    required this.landingLegs,
+    required this.payloadWeights,
+    required this.flickrImages,
+    required this.name,
+    required this.type,
+    required this.active,
+    required this.stages,
+    required this.boosters,
+    required this.costPerLaunch,
+    required this.successRatePct,
+    required this.firstFlight,
+    required this.country,
+    required this.company,
+    required this.wikipedia,
+    required this.description,
+    required this.id,
   });
 
   Diameter height;
@@ -53,11 +59,7 @@ class Rockets {
   String description;
   String id;
 
-  factory Rockets.fromRawJson(String str) => Rockets.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory Rockets.fromJson(Map<String, dynamic> json) => Rockets(
+  factory Rocket.fromJson(Map<String, dynamic> json) => Rocket(
         height: Diameter.fromJson(json["height"]),
         diameter: Diameter.fromJson(json["diameter"]),
         mass: Mass.fromJson(json["mass"]),
@@ -113,42 +115,37 @@ class Rockets {
 
 class Diameter {
   Diameter({
-    this.meters,
-    this.feet,
+    required this.meters,
+    required this.feet,
   });
 
   double meters;
   double feet;
 
-  factory Diameter.fromRawJson(String str) =>
-      Diameter.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory Diameter.fromJson(Map<String, dynamic> json) => Diameter(
-        meters: json["meters"] == null ? null : json["meters"].toDouble(),
-        feet: json["feet"] == null ? null : json["feet"].toDouble(),
+        meters: json["meters"] == null ? 0.0 : json["meters"].toDouble(),
+        feet: json["feet"] == null ? 0.0 : json["feet"].toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
-        "meters": meters == null ? null : meters,
-        "feet": feet == null ? null : feet,
+        "meters": meters,
+        "feet": feet,
       };
 }
 
 class Engines {
   Engines({
-    this.isp,
-    this.thrustSeaLevel,
-    this.thrustVacuum,
-    this.number,
-    this.type,
-    this.version,
-    this.layout,
-    this.engineLossMax,
-    this.propellant1,
-    this.propellant2,
-    this.thrustToWeight,
+    required this.isp,
+    required this.thrustSeaLevel,
+    required this.thrustVacuum,
+    required this.number,
+    required this.type,
+    required this.version,
+    required this.layout,
+    required this.engineLossMax,
+    required this.propellant1,
+    required this.propellant2,
+    required this.thrustToWeight,
   });
 
   Isp isp;
@@ -163,10 +160,6 @@ class Engines {
   String propellant2;
   double thrustToWeight;
 
-  factory Engines.fromRawJson(String str) => Engines.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory Engines.fromJson(Map<String, dynamic> json) => Engines(
         isp: Isp.fromJson(json["isp"]),
         thrustSeaLevel: Thrust.fromJson(json["thrust_sea_level"]),
@@ -174,12 +167,14 @@ class Engines {
         number: json["number"],
         type: json["type"],
         version: json["version"],
-        layout: json["layout"] == null ? null : json["layout"],
+        layout: json["layout"] == null ? 'N/A' : json["layout"],
         engineLossMax:
-            json["engine_loss_max"] == null ? null : json["engine_loss_max"],
+            json["engine_loss_max"] == null ? 0 : json["engine_loss_max"],
         propellant1: json["propellant_1"],
         propellant2: json["propellant_2"],
-        thrustToWeight: json["thrust_to_weight"].toDouble(),
+        thrustToWeight: json["thrust_to_weight"] == null
+            ? 0.0
+            : double.parse(json["thrust_to_weight"].toString()),
       );
 
   Map<String, dynamic> toJson() => {
@@ -189,8 +184,8 @@ class Engines {
         "number": number,
         "type": type,
         "version": version,
-        "layout": layout == null ? null : layout,
-        "engine_loss_max": engineLossMax == null ? null : engineLossMax,
+        "layout": layout,
+        "engine_loss_max": engineLossMax,
         "propellant_1": propellant1,
         "propellant_2": propellant2,
         "thrust_to_weight": thrustToWeight,
@@ -199,16 +194,12 @@ class Engines {
 
 class Isp {
   Isp({
-    this.seaLevel,
-    this.vacuum,
+    required this.seaLevel,
+    required this.vacuum,
   });
 
   int seaLevel;
   int vacuum;
-
-  factory Isp.fromRawJson(String str) => Isp.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory Isp.fromJson(Map<String, dynamic> json) => Isp(
         seaLevel: json["sea_level"],
@@ -223,16 +214,12 @@ class Isp {
 
 class Thrust {
   Thrust({
-    this.kN,
-    this.lbf,
+    required this.kN,
+    required this.lbf,
   });
 
   int kN;
   int lbf;
-
-  factory Thrust.fromRawJson(String str) => Thrust.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory Thrust.fromJson(Map<String, dynamic> json) => Thrust(
         kN: json["kN"],
@@ -247,12 +234,12 @@ class Thrust {
 
 class FirstStage {
   FirstStage({
-    this.thrustSeaLevel,
-    this.thrustVacuum,
-    this.reusable,
-    this.engines,
-    this.fuelAmountTons,
-    this.burnTimeSec,
+    required this.thrustSeaLevel,
+    required this.thrustVacuum,
+    required this.reusable,
+    required this.engines,
+    required this.fuelAmountTons,
+    required this.burnTimeSec,
   });
 
   Thrust thrustSeaLevel;
@@ -262,19 +249,13 @@ class FirstStage {
   double fuelAmountTons;
   int burnTimeSec;
 
-  factory FirstStage.fromRawJson(String str) =>
-      FirstStage.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory FirstStage.fromJson(Map<String, dynamic> json) => FirstStage(
         thrustSeaLevel: Thrust.fromJson(json["thrust_sea_level"]),
         thrustVacuum: Thrust.fromJson(json["thrust_vacuum"]),
         reusable: json["reusable"],
         engines: json["engines"],
         fuelAmountTons: json["fuel_amount_tons"].toDouble(),
-        burnTimeSec:
-            json["burn_time_sec"] == null ? null : json["burn_time_sec"],
+        burnTimeSec: json["burn_time_sec"] == null ? 0 : json["burn_time_sec"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -283,47 +264,38 @@ class FirstStage {
         "reusable": reusable,
         "engines": engines,
         "fuel_amount_tons": fuelAmountTons,
-        "burn_time_sec": burnTimeSec == null ? null : burnTimeSec,
+        "burn_time_sec": burnTimeSec,
       };
 }
 
 class LandingLegs {
   LandingLegs({
-    this.number,
+    required this.number,
     this.material,
   });
 
   int number;
-  String material;
-
-  factory LandingLegs.fromRawJson(String str) =>
-      LandingLegs.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
+  String? material;
 
   factory LandingLegs.fromJson(Map<String, dynamic> json) => LandingLegs(
         number: json["number"],
-        material: json["material"] == null ? null : json["material"],
+        material: json["material"] == null ? 'N/A' : json["material"],
       );
 
   Map<String, dynamic> toJson() => {
         "number": number,
-        "material": material == null ? null : material,
+        "material": material == null ? 'N/A' : material,
       };
 }
 
 class Mass {
   Mass({
-    this.kg,
-    this.lb,
+    required this.kg,
+    required this.lb,
   });
 
   int kg;
   int lb;
-
-  factory Mass.fromRawJson(String str) => Mass.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory Mass.fromJson(Map<String, dynamic> json) => Mass(
         kg: json["kg"],
@@ -338,21 +310,16 @@ class Mass {
 
 class PayloadWeight {
   PayloadWeight({
-    this.id,
-    this.name,
-    this.kg,
-    this.lb,
+    required this.id,
+    required this.name,
+    required this.kg,
+    required this.lb,
   });
 
   String id;
   String name;
   int kg;
   int lb;
-
-  factory PayloadWeight.fromRawJson(String str) =>
-      PayloadWeight.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory PayloadWeight.fromJson(Map<String, dynamic> json) => PayloadWeight(
         id: json["id"],
@@ -371,12 +338,12 @@ class PayloadWeight {
 
 class SecondStage {
   SecondStage({
-    this.thrust,
-    this.payloads,
-    this.reusable,
-    this.engines,
-    this.fuelAmountTons,
-    this.burnTimeSec,
+    required this.thrust,
+    required this.payloads,
+    required this.reusable,
+    required this.engines,
+    required this.fuelAmountTons,
+    required this.burnTimeSec,
   });
 
   Thrust thrust;
@@ -386,19 +353,13 @@ class SecondStage {
   double fuelAmountTons;
   int burnTimeSec;
 
-  factory SecondStage.fromRawJson(String str) =>
-      SecondStage.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory SecondStage.fromJson(Map<String, dynamic> json) => SecondStage(
         thrust: Thrust.fromJson(json["thrust"]),
         payloads: Payloads.fromJson(json["payloads"]),
         reusable: json["reusable"],
         engines: json["engines"],
         fuelAmountTons: json["fuel_amount_tons"].toDouble(),
-        burnTimeSec:
-            json["burn_time_sec"] == null ? null : json["burn_time_sec"],
+        burnTimeSec: json["burn_time_sec"] == null ? 0 : json["burn_time_sec"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -407,23 +368,18 @@ class SecondStage {
         "reusable": reusable,
         "engines": engines,
         "fuel_amount_tons": fuelAmountTons,
-        "burn_time_sec": burnTimeSec == null ? null : burnTimeSec,
+        "burn_time_sec": burnTimeSec,
       };
 }
 
 class Payloads {
   Payloads({
-    this.compositeFairing,
-    this.option1,
+    required this.compositeFairing,
+    required this.option1,
   });
 
   CompositeFairing compositeFairing;
   String option1;
-
-  factory Payloads.fromRawJson(String str) =>
-      Payloads.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory Payloads.fromJson(Map<String, dynamic> json) => Payloads(
         compositeFairing: CompositeFairing.fromJson(json["composite_fairing"]),
@@ -438,17 +394,12 @@ class Payloads {
 
 class CompositeFairing {
   CompositeFairing({
-    this.height,
-    this.diameter,
+    required this.height,
+    required this.diameter,
   });
 
   Diameter height;
   Diameter diameter;
-
-  factory CompositeFairing.fromRawJson(String str) =>
-      CompositeFairing.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory CompositeFairing.fromJson(Map<String, dynamic> json) =>
       CompositeFairing(

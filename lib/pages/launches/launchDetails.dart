@@ -1,24 +1,43 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:spxplorer/models/models.dart';
 
-class LaunchDetails extends StatefulWidget {
-  final String id, launchName;
+class LaunchDetails extends StatelessWidget {
+  final Launch launch;
+  const LaunchDetails({required this.launch, Key? key}) : super(key: key);
 
-  const LaunchDetails({Key key, this.id, this.launchName}) : super(key: key);
-  @override
-  _LaunchDetailsState createState() => _LaunchDetailsState();
-}
-
-class _LaunchDetailsState extends State<LaunchDetails> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.launchName),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [Text(widget.id)],
-        ),
+    //var singleLaunch = watch(oneLaunchFuture!(id));
+    return Material(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 250,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(launch.name),
+              background: Hero(
+                tag: launch.id,
+                child: CachedNetworkImage(
+                  imageUrl: launch.links!.patch!.large.toString(),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Center(
+                    child: Text(launch.flightNumber.toString()),
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

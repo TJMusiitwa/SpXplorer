@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spxplorer/pages/home/home_page.dart';
 import 'package:spxplorer/pages/launches/launches.dart';
 import 'package:spxplorer/pages/more/more_page.dart';
+import 'package:spxplorer/pages/starlink/starlink_page.dart';
 import 'package:spxplorer/pages/vehicles/vehicles.dart';
 
 class SpxplorerNav extends StatefulWidget {
@@ -11,7 +12,13 @@ class SpxplorerNav extends StatefulWidget {
 
 class _SpxplorerNavState extends State<SpxplorerNav> {
   int _currentPage = 0;
-  final _pages = [HomePage(), LaunchesPage(), VehiclesPage(), MorePage()];
+  final _pages = [
+    HomePage(),
+    LaunchesPage(),
+    VehiclesPage(),
+    StarlinkPage(),
+    MorePage()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,13 +30,15 @@ class _SpxplorerNavState extends State<SpxplorerNav> {
           BottomNavigationBarItem(
               icon: Icon(Icons.arrow_upward), label: 'Launches'),
           BottomNavigationBarItem(icon: Icon(Icons.commute), label: 'Vehicles'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.satellite), label: 'Starlink'),
           BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More')
         ],
         currentIndex: _currentPage,
         onTap: (value) => setState(() {
           _currentPage = value;
         }),
-        selectedItemColor: Theme.of(context).accentColor,
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
         unselectedItemColor: Theme.of(context).unselectedWidgetColor,
       ),
     );

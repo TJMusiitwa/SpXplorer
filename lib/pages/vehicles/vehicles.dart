@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spxplorer/pages/vehicles/landpads.dart';
 import 'package:spxplorer/pages/vehicles/rockets_page.dart';
 import 'package:spxplorer/pages/vehicles/ships_page.dart';
 
@@ -25,7 +26,7 @@ class VehiclesPage extends StatelessWidget {
             )
           ]),
         ),
-        body: TabBarView(children: [RocketsPage(), RocketsPage(), ShipsPage()]),
+        body: TabBarView(children: [RocketsPage(), LandpadsTab(), ShipsPage()]),
       ),
     );
   }

@@ -4,7 +4,8 @@ class SmallCard extends StatelessWidget {
   final String title;
   final Widget cardContent;
 
-  const SmallCard({Key key, this.title, this.cardContent}) : super(key: key);
+  const SmallCard({Key? key, required this.title, required this.cardContent})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
